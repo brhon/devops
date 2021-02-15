@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      restartPolicy: Always 
+      containers:
+      - name: postgres
+        image: postgres:12
+        env:
+        - name: POSTGRES_PORT
+          valueFrom:
+              configMapKeyRef:
+                name: postgres-config
+                key: POSTGRES_PORT
+        - name: POSTGRES_DB
+          valueFrom:
+              configMapKeyRef:
+                name: postgres-config
+                key: POSTGRES_DB
+        - name: POSTGRES_HOST
+          valueFrom:
+              configMapKeyRef:
+                name: postgres-config
+                key: POSTGRES_HOST
+        ports:
+        - containerPort: 5432

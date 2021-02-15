@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poll
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: poll
+  template:
+    metadata:
+      labels:
+        app: poll
+    spec:
+      restartPolicy: Always 
+      containers:
+      - name: poll
+        image: epitechcontent/t-dop-600-poll:k8s
+        env:
+          - name: REDIS_HOST
+            valueFrom:
+                configMapKeyRef:
+                  name: redis-config
+                  key: REDIS_HOST
+        resources:
+          limits:
+            memory: "128Mi"
+        ports:
+        - containerPort: 80
